@@ -9,10 +9,13 @@ class Scene {
 public:
 	void AddSphere(Sphere h);
 	void AddLight(Light l);
-
-	auto s_begin() { return spheres.begin(); }
-	auto l_begin() { return lights.begin(); }
-private:
+protected:
+	Point3 camera;
 	std::vector<Sphere> spheres;
 	std::vector<Light> lights;
+};
+
+class TestScene : public Scene {
+public:
+	TestScene();
 };
