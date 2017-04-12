@@ -9,3 +9,13 @@ Sphere::Sphere(const Point3& position, double radius)
 	this->position = Point3(position);
 	this->radius = radius;
 }
+
+Point3 Sphere::GetPosition(void)
+{
+	return Point3(this->position);
+}
+
+double Sphere::GetRadius(void)
+{
+	return this->radius;
+}

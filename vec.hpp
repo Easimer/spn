@@ -16,18 +16,22 @@ public:
 	inline double GetX(void);
 	inline double GetY(void);
 	inline double GetZ(void);
-	static double Dot(Vector3& a, Vector3& b);
+	static double Dot(Vector3 a, Vector3 b);
+	void SetX(double x);
+	void SetY(double y);
+	void SetZ(double z);
+	Vector3 Normalize(void);
 private:
 	double x, y, z;
 };
 
 typedef Vector3 Point3;
 
-Vector3 operator+(Vector3& a, Vector3& b);
-Vector3 operator-(Vector3& a, Vector3& b);
-Vector3 operator*(Vector3& a, Vector3& b);
+Vector3 operator+(Vector3 a, Vector3 b);
+Vector3 operator-(Vector3 a, Vector3 b);
+Vector3 operator*(Vector3 a, Vector3 b);
 bool operator==(Vector3 a, Vector3 b);
-Vector3 operator*(Vector3& a, double b);
-Vector3 operator/(Vector3& a, double b);
+Vector3 operator*(Vector3 a, double b);
+Vector3 operator/(Vector3 a, double b);
 std::ostream& operator<<(std::ostream& os, Vector3& v);
 std::ostream& operator<<(std::ostream& os, Vector3 v);

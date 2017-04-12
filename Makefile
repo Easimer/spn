@@ -5,7 +5,7 @@ LDFLAGS=-lm
 all: spn test
 
 spn: spn.o geo.o vec.o light.o scene.o
-	${CC} ${LDFLAGS} -o spn spn.o geo.o vec.o
+	${CC} ${LDFLAGS} -o spn spn.o geo.o vec.o light.o scene.o
 
 test: test.o geo.o vec.o
 	${CC} ${LDFLAGS} -o test test.o geo.o vec.o
