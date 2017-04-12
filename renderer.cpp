@@ -1,3 +1,4 @@
+#include <iostream>
 #include <SDL2/SDL.h>
 #include "renderer.hpp"
 
@@ -7,22 +8,54 @@ SDL2Renderer::SDL2Renderer(unsigned int width, unsigned int height)
 {
 	SDL_Init(SDL_INIT_VIDEO);
 	SDL_CreateWindowAndRenderer(width, height, 0, &(this->window), &(this->renderer));
-	SDL_RenderClear(this->renderer);
+	SDL_RenderClear(renderer);
+	this->width = width; this->height = height;
+}
+
+unsigned SDL2Renderer::GetWidth(void)
+{
+	return width;
+}
+
+unsigned SDL2Renderer::GetHeight(void)
+{
+	return height;
 }
 
 SDL2Renderer::~SDL2Renderer()
 {
-	SDL_DestroyRenderer(this->renderer);
-	SDL_DestroyWindow(this->window);
+	SDL_DestroyRenderer(renderer);
+	SDL_DestroyWindow(window);
 	SDL_Quit();
+	std::cout << "SDL_Quit" << std::endl;
 }
 
 void SDL2Renderer::Clear()
 {
-	SDL_RenderClear(this->renderer);
+	SDL_RenderClear(renderer);
 }
 
 void SDL2Renderer::Present()
 {
-	SDL_RenderPresent(this->renderer);
+	SDL_RenderPresent(renderer);
 }
+
+void SDL2Renderer::SetColor(Vector3& color)
+{
+	//std::cout << "SC: (" << color[0] << ',' << color[1] << ',' << color[2] << ')' << std::endl;
+	SDL_SetRenderDrawColor(renderer, color[0], color[1], color[2], 255);
+}
+
+void SDL2Renderer::SetColor(double r, double g, double b)
+{
+	//std::cout << "SC: (" << r << ',' << g << ',' << b << ')' << std::endl;
+	SDL_SetRenderDrawColor(renderer, r, g, b, 255);
+}
+
+void SDL2Renderer::PlotPixel(unsigned x, unsigned y)
+{
+	//std::cout << "PP: (" << x << ',' << y << ')' << std::endl;
+	SDL_RenderDrawPoint(renderer, x, y);
+}
+
+

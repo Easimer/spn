@@ -35,4 +35,5 @@ protected:
 class TestScene : public Scene {
 public:
 	TestScene(Renderer& r);
+	void Draw(void);
 };

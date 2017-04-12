@@ -1,5 +1,5 @@
 CC=g++
-CXXFLAGS=-g -std=c++17 -Wall
+CXXFLAGS=-O2 -mtune=native -march=native -std=c++17 -Wall
 LDFLAGS=-lm -lSDL2
 
 all: spn test
