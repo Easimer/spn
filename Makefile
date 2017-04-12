@@ -1,11 +1,11 @@
 CC=g++
 CXXFLAGS=-g -std=c++17 -Wall
-LDFLAGS=-lm
+LDFLAGS=-lm -lSDL2
 
 all: spn test
 
-spn: spn.o geo.o vec.o light.o scene.o
-	${CC} ${LDFLAGS} -o spn spn.o geo.o vec.o light.o scene.o
+spn: spn.o geo.o vec.o light.o scene.o renderer.o
+	${CC} ${LDFLAGS} -o spn spn.o geo.o vec.o light.o scene.o renderer.o
 
 test: test.o geo.o vec.o
 	${CC} ${LDFLAGS} -o test test.o geo.o vec.o
@@ -27,6 +27,9 @@ scene.o: scene.cpp scene.hpp
 
 light.o: light.cpp light.hpp
 	${CC} ${CXXFLAGS} -o light.o -c light.cpp
+
+renderer.o: renderer.cpp renderer.hpp
+	${CC} ${CXXFLAGS} -o renderer.o -c renderer.cpp
 
 tests: test
 	./test

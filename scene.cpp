@@ -14,11 +14,15 @@ void Scene::AddLight(Light l)
 	lights.push_back(l);
 }
 
-Sphere* Scene::FirstHit(Vector3& dir)
+FirstHitResult Scene::FirstHit(Vector3& dir)
 {
 	// dir = NORMALIZE(C - W(P))
+	FirstHitResult res;
+
 	Sphere* min = NULL;
 	auto min_dist = std::numeric_limits<double>::infinity();
+	Point3 hit;
+	Vector3 normal;
 	for(auto& sphere : spheres)
 	{
 		Vector3 gp = sphere.GetPosition();
@@ -39,21 +43,27 @@ Sphere* Scene::FirstHit(Vector3& dir)
 		}
 		double h = sqrt(grsq - asq);
 		Vector3 i = a - dir * h;
-		Point3 hit = gp + i;
-		double D = (camera - hit).GetLength();
+		Point3 l_hit = gp + i;
+		double D = (camera - l_hit).GetLength();
 		if(D < min_dist)
 		{
 			min_dist = D;
 			min = &sphere;
+			hit = l_hit;
+			normal = i / gr;
 		}
 	}
-	return min;
+	res.result = min;
+	res.hit = Vector3(hit);
+	res.normal = Vector3(normal);
+	return res;
 }
 
 void Scene::Draw(void)
 {
 	Point3 screen_topleft(camera[0] - width / 2, camera[1] - height / 2, camera[2] + camera_dist);
 	Point3 px(screen_topleft);
+
 	for(unsigned x = 0; x < width; x++)
 	{
 		px.SetX(screen_topleft[0] + x);
@@ -61,15 +71,18 @@ void Scene::Draw(void)
 		{
 			px.SetY(screen_topleft[1] + y);
 			Vector3 cpx = (camera - px).Normalize();
-			Sphere* s = FirstHit(cpx);
+			FirstHitResult res = FirstHit(cpx);
+			if(!res.result)
+				continue;
 			
 		}
 	}
 }
 
-TestScene::TestScene()
+TestScene::TestScene(Renderer& r)
 {
-	width = 1280; height = 720;
+	this->renderer = &r;
+	width = r.GetWidth(); height = r.GetHeight();
 	camera = Point3(0, 0, 0);
 	camera_dist = 50;
 	spheres.push_back(Sphere(Vector3(50, 50, -50), 10));

@@ -2,8 +2,17 @@
 
 #include <vector>
 #include <iterator>
+#include <memory>
 #include "geo.hpp"
 #include "light.hpp"
+#include "renderer.hpp"
+
+class FirstHitResult {
+public:
+	Sphere* result;
+	Point3 hit;
+	Vector3 normal;
+};
 
 class Scene {
 public:
@@ -12,7 +21,7 @@ public:
 	void AddSphere(Sphere h);
 	void AddLight(Light l);
 private:
-	Sphere* FirstHit(Vector3& dir);
+	FirstHitResult FirstHit(Vector3& dir);
 
 protected:
 	unsigned width, height;
@@ -20,9 +29,10 @@ protected:
 	double camera_dist;
 	std::vector<Sphere> spheres;
 	std::vector<Light> lights;
+	Renderer* renderer;
 };
 
 class TestScene : public Scene {
 public:
-	TestScene();
+	TestScene(Renderer& r);
 };
