@@ -11,10 +11,7 @@ spn: $(OBJECTS) build
 	$(CC) -o spn $(OBJECTS) $(LDFLAGS)
 
 %.o: %.cpp include/%.hpp
-	$(CC) -o $@ -c $< $(CXXFLAGS) 
-
-build:
-	mkdir -p build
+	$(CC) -o $@ -c $< $(CXXFLAGS)
 
 run: spn
 	SDL_VIDEODRIVER=wayland ./spn
