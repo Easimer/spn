@@ -2,7 +2,7 @@
 
 #include "vec.hpp"
 
-class Light : public Point3 {
+class Light {
 public:
 	Light();
 	Light(Point3 position);
