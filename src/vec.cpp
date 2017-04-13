@@ -49,18 +49,18 @@ Vector3 operator*(Vector3 a, Vector3 b)
 
 Vector3 operator+(Vector3& a, Vector3& b)
 {
-	return Vector3(a.GetX() + b.GetX(), a.GetY() + b.GetY(), a.GetZ() + b.GetZ());
+	return Vector3(a[0] + b[0], a[1] + b[1], a[2] + b[2]);
 }
 
 Vector3 operator-(Vector3& a, Vector3& b)
 {
-	return Vector3(a.GetX() - b.GetX(), a.GetY() - b.GetY(), a.GetZ() - b.GetZ());
+	return Vector3(a[0] - b[0], a[1] - b[1], a[2] - b[2]);
 }
 
 // scalar multiplication
 Vector3 operator*(Vector3& a, double b)
 {
-	return Vector3(a.GetX() * b, a.GetY() * b, a.GetZ() * b);
+	return Vector3(a[0] * b, a[1] * b, a[2] * b);
 }
 
 // cross product
@@ -71,19 +71,19 @@ Vector3 operator*(Vector3& a, Vector3& b)
 
 std::ostream& operator<<(std::ostream& os, Vector3& v)
 {
-	os << "(" << v.GetX() << ", " << v.GetY() << ", " << v.GetZ() << ")";
+	os << "(" << v[0] << ", " << v[1] << ", " << v[2] << ")";
 	return os;
 }
 
 std::ostream& operator<<(std::ostream& os, Vector3 v)
 {
-	os << "(" << v.GetX() << ", " << v.GetY() << ", " << v.GetZ() << ")";
+	os << "(" << v[0] << ", " << v[1] << ", " << v[2] << ")";
 	return os;
 }
 
 double Vector3::Dot(Vector3 a, Vector3 b)
 {
-	return a.GetX() * b.GetX() + a.GetY() * b.GetY() + a.GetZ() * b.GetZ();
+	return a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
 }
 
 double Vector3::operator[](const int index) const
