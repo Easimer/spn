@@ -12,6 +12,7 @@ SDL2Renderer::SDL2Renderer(unsigned int width, unsigned int height)
 	this->width = width; this->height = height;
 	//IMG_Init(IMG_INIT_PNG);
 	last_frame = std::chrono::high_resolution_clock::now();
+	delta_time = 0;
 }
 
 unsigned SDL2Renderer::GetWidth(void)
@@ -46,8 +47,8 @@ void SDL2Renderer::Present()
 	clock = std::chrono::high_resolution_clock::now();*/
 
 	auto now = std::chrono::high_resolution_clock::now();
-	auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(now - last_frame).count();
-	std::cout << "Render time: " << duration << " milliseconds" << std::endl;
+	delta_time = std::chrono::duration_cast<std::chrono::milliseconds>(now - last_frame).count();
+	std::cout << "Render time: " << delta_time << " milliseconds" << std::endl;
 	last_frame = now;
 }
 
@@ -88,4 +89,9 @@ void SDL2Renderer::Update(void)
 		}
 	}
 	
+}
+
+unsigned SDL2Renderer::GetDelta(void)
+{
+	return delta_time;
 }

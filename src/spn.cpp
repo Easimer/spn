@@ -10,7 +10,8 @@ int main(int argc, char** argv)
 	while(!r.IsQuit())
 	{
 		r.Clear();
-		ts.Update();
+		r.Update();
+		ts.Update((double)r.GetDelta() / 1000.0);
 		ts.Draw();
 		r.Present();
 	}

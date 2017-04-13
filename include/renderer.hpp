@@ -37,6 +37,8 @@ public:
 	void Present(void);
 	void Update(void);
 
+	unsigned GetDelta(void);
+
 	bool IsQuit() { return quit; };
 private:
 	SDL_Event event;
@@ -45,5 +47,6 @@ private:
 	unsigned width, height;
 	bool quit = false;
 	std::chrono::time_point<std::chrono::high_resolution_clock> last_frame;
+	unsigned delta_time;
 };
 
