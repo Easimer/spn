@@ -13,6 +13,10 @@ public:
 	virtual void PlotPixel(unsigned x, unsigned y) {};
 	virtual void Clear(void) {};
 	virtual void Present(void) {};
+	virtual void Update(void) {};
+
+protected:
+	bool quit = false;
 };
 
 class SDL2Renderer : public Renderer {
@@ -30,10 +34,14 @@ public:
 
 	void Clear(void);
 	void Present(void);
+	void Update(void);
+
+	bool IsQuit() { return quit; };
 private:
 	SDL_Event event;
 	SDL_Renderer* renderer;
 	SDL_Window* window;
 	unsigned width, height;
+	bool quit = false;
 };
 

@@ -42,7 +42,7 @@ FirstHitResult Scene::FirstHit(Vector3& dir)
 			continue;
 		}
 		double h = sqrt(grsq - asq);
-		Vector3 i = a - dir * h;
+		Vector3 i = a + dir * h;
 		Point3 l_hit = gp + i;
 		double D = (camera - l_hit).GetLength();
 		if(D < min_dist)
@@ -61,8 +61,8 @@ FirstHitResult Scene::FirstHit(Vector3& dir)
 
 void Scene::Draw(void)
 {
-	std::cout << "Scene::Draw" << std::endl;
-	Point3 screen_topleft(camera[0] - width / 2, camera[1] - height / 2, camera[2] + camera_dist);
+	//std::cout << "Scene::Draw" << std::endl;
+	Point3 screen_topleft(camera[0] - width / 2, camera[1] - height / 2, camera[2] - camera_dist);
 	Point3 px(screen_topleft);
 	for(unsigned x = 0; x < width; x++)
 	{
@@ -78,7 +78,13 @@ void Scene::Draw(void)
 				continue;
 			}
 
+			double u, v;
+			Vector3 d = (res.hit - res.result->GetPosition()).Normalize();
+			u = 0.5 + (atan2(d[2], d[0]) / (2 * M_PI));
+			v = 0.5 - asin(d[1]) / M_PI;
+
 			double r = 0, g = 0, b = 0;
+			double s = 0; // TEMP
 			int n = 0;
 			for(auto& light_src : lights)
 			{
@@ -97,17 +103,31 @@ void Scene::Draw(void)
 				r += a * (lcolor[0]);
 				g += a * (lcolor[1]);
 				b += a * (lcolor[2]);
+				s += a; // TEMP
 				//std::cout << "\nA: " << a << std::endl;
 				//std::cout << "L: (" << a * lcolor[0] << ',' << a * lcolor[1] << ',' << a * lcolor[2] << ')' << std::endl;
 				n++;
 			}
-
-			double u, v;
+			// TEMP
+			s /= n;
+			double radius = res.result->GetRadius() * 2;
+			// TEMP
 
 			if(n > 0)
 			{
 				//std::cout << r << ' ' << g << ' ' << b << std::endl;
-				renderer->SetColor(r / n, g / n, b / n);
+				//renderer->SetColor(r / n, g / n, b / n);
+				// TEMP
+				int ux = (int)(radius * u);
+				int vy = (int)(radius * v);
+				if(
+					(((ux & 1) == 0) && ((vy & 1) == 0)) ||
+					(((ux & 1) == 1) && ((vy & 1) == 1))
+				)
+					renderer->SetColor(255 * s, 0, 0);
+				else
+					renderer->SetColor(255 * s, 255 * s, 255 * s);
+				// TEMP
 				renderer->PlotPixel(x, y);
 			}
 		}
@@ -119,10 +139,12 @@ TestScene::TestScene(Renderer& r)
 	this->renderer = &r;
 	width = r.GetWidth(); height = r.GetHeight();
 	camera = Point3(0, 0, 0);
-	camera_dist = 50;
-	spheres.push_back(Sphere(Vector3(5, 0, -30), 25));
-	spheres.push_back(Sphere(Vector3(-5, 0, -30), 25));
-	lights.push_back(Light(Point3(0, -75, -30), Vector3(255, 255, 255), 100));
+	camera_dist = (width / 2) * tan(45 * (M_PI / 180));
+	spheres.push_back(Sphere(Vector3(30, 30, 100), 15));
+	spheres.push_back(Sphere(Vector3(-30, 30, 100), 15));
+	spheres.push_back(Sphere(Vector3(30, -30, 100), 15));
+	spheres.push_back(Sphere(Vector3(-30, -30, 100), 15));
+	lights.push_back(Light(Point3(0, 0, 100), Vector3(0, 255, 255), 100));
 }
 
 void TestScene::Draw()

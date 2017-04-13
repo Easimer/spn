@@ -10,6 +10,7 @@ SDL2Renderer::SDL2Renderer(unsigned int width, unsigned int height)
 	SDL_CreateWindowAndRenderer(width, height, 0, &(this->window), &(this->renderer));
 	SDL_RenderClear(renderer);
 	this->width = width; this->height = height;
+	//IMG_Init(IMG_INIT_PNG);
 }
 
 unsigned SDL2Renderer::GetWidth(void)
@@ -32,6 +33,7 @@ SDL2Renderer::~SDL2Renderer()
 
 void SDL2Renderer::Clear()
 {
+	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 	SDL_RenderClear(renderer);
 }
 
@@ -58,4 +60,19 @@ void SDL2Renderer::PlotPixel(unsigned x, unsigned y)
 	SDL_RenderDrawPoint(renderer, x, y);
 }
 
-
+void SDL2Renderer::Update(void)
+{
+	while(SDL_PollEvent(&event))
+	{
+		switch(event.type)
+		{
+			case SDL_QUIT:
+				quit = true;
+				break;
+			default:
+				//std::cout << "unk ev" << std::endl;
+				break;
+		}
+	}
+	
+}

@@ -5,15 +5,14 @@
 
 int main(int argc, char** argv)
 {
-	SDL2Renderer r(1280, 720);
+	SDL2Renderer r(1920, 1080);
 	TestScene ts(r);
-	//while(true)
+	while(!r.IsQuit())
 	{
 		r.Clear();
+		r.Update();
 		ts.Draw();
 		r.Present();
 	}
-	std::cout << "Press enter to exit" << std::endl;
-	system("read");
 	return 0;
 }
