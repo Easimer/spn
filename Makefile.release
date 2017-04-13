@@ -1,8 +1,8 @@
 CC=g++
-CXXFLAGS=-ggdb -std=c++1z -Wall -O0 -fsanitize=leak,address,undefined,float-divide-by-zero -fno-omit-frame-pointer
-LDFLAGS=-lasan -lubsan -lm -lSDL2
+CXXFLAGS=-Ofast -march=native -mtune=native -fomit-frame-pointer -I include/
+LDFLAGS=-lm -lSDL2
 
-SOURCES=$(wildcard *.cpp)
+SOURCES=$(wildcard src/*.cpp)
 OBJECTS=$(SOURCES:.cpp=.o)
 
 all: spn
@@ -10,7 +10,7 @@ all: spn
 spn: $(OBJECTS)
 	$(CC) -o spn $(OBJECTS) $(LDFLAGS)
 
-%.o: %.cpp %.hpp
+%.o: %.cpp include/%.hpp
 	$(CC) -o $@ -c $< $(CXXFLAGS) 
 
 run: spn
