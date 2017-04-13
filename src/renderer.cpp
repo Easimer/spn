@@ -78,6 +78,10 @@ void SDL2Renderer::Update(void)
 			case SDL_QUIT:
 				quit = true;
 				break;
+			case SDL_KEYUP:
+				if(event.key.keysym.sym == SDLK_ESCAPE)
+					quit = true;
+				break;
 			default:
 				//std::cout << "unk ev" << std::endl;
 				break;

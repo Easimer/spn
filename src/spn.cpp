@@ -1,16 +1,16 @@
-#include "spn.h"
+#include "spn.hpp"
 #include <iostream>
 #include "scene.hpp"
 #include "renderer.hpp"
 
 int main(int argc, char** argv)
 {
-	SDL2Renderer r(1920, 1080);
+	SDL2Renderer r(1280, 720);
 	TestScene ts(r);
 	while(!r.IsQuit())
 	{
 		r.Clear();
-		r.Update();
+		ts.Update();
 		ts.Draw();
 		r.Present();
 	}
