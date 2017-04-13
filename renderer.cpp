@@ -11,6 +11,7 @@ SDL2Renderer::SDL2Renderer(unsigned int width, unsigned int height)
 	SDL_RenderClear(renderer);
 	this->width = width; this->height = height;
 	//IMG_Init(IMG_INIT_PNG);
+	last_frame = std::chrono::high_resolution_clock::now();
 }
 
 unsigned SDL2Renderer::GetWidth(void)
@@ -40,6 +41,14 @@ void SDL2Renderer::Clear()
 void SDL2Renderer::Present()
 {
 	SDL_RenderPresent(renderer);
+	/*auto now = std::chrono::high_resolution_clock::now();
+	std::cout << "Render time: " << std::chrono::duration_cast<std::chrono::milliseconds>(now - last_frame).count() << " milliseconds" << std::endl;
+	clock = std::chrono::high_resolution_clock::now();*/
+
+	auto now = std::chrono::high_resolution_clock::now();
+	auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(now - last_frame).count();
+	std::cout << "Render time: " << duration << " milliseconds" << std::endl;
+	last_frame = now;
 }
 
 void SDL2Renderer::SetColor(Vector3& color)

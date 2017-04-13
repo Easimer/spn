@@ -1,6 +1,7 @@
 #pragma once
 
 #include <SDL2/SDL.h>
+#include <chrono>
 #include "vec.hpp"
 
 class Renderer {
@@ -43,5 +44,6 @@ private:
 	SDL_Window* window;
 	unsigned width, height;
 	bool quit = false;
+	std::chrono::time_point<std::chrono::high_resolution_clock> last_frame;
 };
 
