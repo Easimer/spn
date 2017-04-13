@@ -108,13 +108,12 @@ void Scene::Draw(void)
 				//std::cout << "L: (" << a * lcolor[0] << ',' << a * lcolor[1] << ',' << a * lcolor[2] << ')' << std::endl;
 				n++;
 			}
-			// TEMP
-			s /= n;
-			double radius = res.result->GetRadius() * 2;
-			// TEMP
-
 			if(n > 0)
 			{
+				// TEMP
+				s /= n;
+				double radius = res.result->GetRadius() * 2;
+				// TEMP
 				//std::cout << r << ' ' << g << ' ' << b << std::endl;
 				//renderer->SetColor(r / n, g / n, b / n);
 				// TEMP

@@ -1,7 +1,7 @@
 CC=g++
 #CXXFLAGS=-O2 -mtune=native -march=native -std=c++1z -Wall
-CXXFLAGS=-ggdb -std=c++1z -Wall -O0 -fsanitize=leak,address -fno-omit-frame-pointer
-LDFLAGS=-lasan -lm -lSDL2
+CXXFLAGS=-ggdb -std=c++1z -Wall -O0 -fsanitize=leak,address,undefined,float-divide-by-zero -fno-omit-frame-pointer
+LDFLAGS=-lasan -lubsan -lm -lSDL2
 
 all: spn
 
@@ -26,6 +26,9 @@ light.o: light.cpp light.hpp
 
 renderer.o: renderer.cpp renderer.hpp
 	${CC} ${CXXFLAGS} -o renderer.o -c renderer.cpp
+
+run: spn
+	SDL_VIDEODRIVER=wayland ./spn
 
 clean:
 	$(info Cleaning)
