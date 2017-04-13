@@ -11,7 +11,7 @@ spn: $(OBJECTS)
 	$(CC) -o spn $(OBJECTS) $(LDFLAGS)
 
 %.o: %.cpp include/%.hpp
-	$(CC) -o $@ -c $< $(CXXFLAGS) 
+	$(CC) $(CXXFLAGS) -o $@ -c $<
 
 run: spn
 	SDL_VIDEODRIVER=wayland ./spn

@@ -20,7 +20,7 @@ public:
 	void AddSphere(Sphere h);
 	void AddLight(Light l);
 private:
-	FirstHitResult FirstHit(Vector3& dir);
+	FirstHitResult FirstHit(Vector3& src, Vector3& dir);
 
 protected:
 	unsigned width, height;
@@ -35,4 +35,5 @@ class TestScene : public Scene {
 public:
 	TestScene(Renderer& r);
 	void Draw(void);
+	void Update(double dt);
 };
