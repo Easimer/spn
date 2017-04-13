@@ -42,7 +42,7 @@ FirstHitResult Scene::FirstHit(Vector3& dir)
 			continue;
 		}
 		double h = sqrt(grsq - asq);
-		Vector3 i = a + dir * h;
+		Vector3 i = a - dir * h;
 		Point3 l_hit = gp + i;
 		double D = (camera - l_hit).GetLength();
 		if(D < min_dist)
@@ -144,7 +144,7 @@ TestScene::TestScene(Renderer& r)
 	spheres.push_back(Sphere(Vector3(-30, 30, 100), 15));
 	spheres.push_back(Sphere(Vector3(30, -30, 100), 15));
 	spheres.push_back(Sphere(Vector3(-30, -30, 100), 15));
-	lights.push_back(Light(Point3(0, 0, 100), Vector3(0, 255, 255), 100));
+	lights.push_back(Light(Point3(0, 0, 100), Vector3(0, 255, 255), 25));
 }
 
 void TestScene::Draw()

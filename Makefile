@@ -1,17 +1,13 @@
 CC=g++
-CXXFLAGS=-O2 -mtune=native -march=native -std=c++17 -Wall
-LDFLAGS=-lm -lSDL2
+#CXXFLAGS=-O2 -mtune=native -march=native -std=c++1z -Wall
+CXXFLAGS=-ggdb -std=c++1z -Wall -O0 -fsanitize=leak,address -fno-omit-frame-pointer
+LDFLAGS=-lasan -lm -lSDL2
 
-all: spn test
+all: spn
 
 spn: spn.o geo.o vec.o light.o scene.o renderer.o
-	${CC} ${LDFLAGS} -o spn spn.o geo.o vec.o light.o scene.o renderer.o
-
-test: test.o geo.o vec.o
-	${CC} ${LDFLAGS} -o test test.o geo.o vec.o
-
-test.o: test.cpp
-	${CC} ${CXXFLAGS} -o test.o -c test.cpp
+	$(info Linking spn)
+	${CC} -o spn spn.o geo.o vec.o light.o scene.o renderer.o ${LDFLAGS}
 
 spn.o: spn.cpp
 	${CC} ${CXXFLAGS} -o spn.o -c spn.cpp
@@ -31,8 +27,6 @@ light.o: light.cpp light.hpp
 renderer.o: renderer.cpp renderer.hpp
 	${CC} ${CXXFLAGS} -o renderer.o -c renderer.cpp
 
-tests: test
-	./test
-
 clean:
+	$(info Cleaning)
 	rm -rf *.o spn test
