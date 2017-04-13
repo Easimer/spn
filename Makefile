@@ -7,14 +7,14 @@ OBJECTS=$(SOURCES:.cpp=.o)
 
 all: spn
 
-spn: $(OBJECTS) build
+spn: $(OBJECTS)
 	$(CC) -o spn $(OBJECTS) $(LDFLAGS)
 
-%.o: %.cpp include/%.hpp
-	$(CC) -o $@ -c $< $(CXXFLAGS)
+src/%.o: src/%.cpp include/%.hpp
+	$(CC) $(CXXFLAGS) -o $@ -c $<
 
 run: spn
-	SDL_VIDEODRIVER=wayland ./spn
+	SDL_VIDEODRIVER=wayland ./spn test.scn
 
 clean:
 	$(info Cleaning)

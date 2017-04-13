@@ -1,4 +1,5 @@
 #include "scene.hpp"
+#include <iostream>
 #include <limits>
 #include <cmath>
 #include "geo.hpp"
@@ -6,11 +7,13 @@
 
 void Scene::AddSphere(Sphere s)
 {
+	std::cout << "Sphere added @ " << s.GetPosition() << std::endl;
 	spheres.push_back(s);
 }
 
 void Scene::AddLight(Light l)
 {
+	std::cout << "Light added" << std::endl;
 	lights.push_back(l);
 }
 
@@ -146,17 +149,28 @@ void Scene::Draw(void)
 	}
 }
 
-TestScene::TestScene(Renderer& r)
+void Scene::Update(double dt)
+{
+	et += dt;
+}
+
+Scene::Scene(Renderer& r)
 {
 	this->renderer = &r;
 	width = r.GetWidth(); height = r.GetHeight();
 	camera = Point3(0, 0, 0);
 	camera_dist = (width / 2) * tan(45 * (M_PI / 180));
+	et = 0.0;
+}
+
+// TestScene
+
+TestScene::TestScene(Renderer& r) : Scene::Scene(r)
+{
 	spheres.push_back(Sphere(Vector3(0, 0, 150), 30));
 	//lights.push_back(Light(Point3(0, 0, 150), Vector3(0.0, 0.0, 1.0), 75));
 	lights.push_back(Light(Point3(50, 0, 100), Vector3(1.0, 0.0, 0.0), 25));
 	lights.push_back(Light(Point3(0, 50, 100), Vector3(1.0, 1.0, 1.0), 25));
-	et = 0.0;
 }
 
 void TestScene::Draw()
@@ -166,9 +180,7 @@ void TestScene::Draw()
 
 void TestScene::Update(double dt)
 {
-	et += dt;
-	if(lights.size() == 0)
-		return;
+	Scene::Update(dt);
 	/*Sphere s = spheres.front();
 	Point3 sp = s.GetPosition();
 	double z = 150 + 5 * sin(et);

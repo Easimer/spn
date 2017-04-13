@@ -15,6 +15,8 @@ public:
 
 class Scene {
 public:
+	Scene(Renderer& r);
+	void Update(double dt);
 	void Draw(void);
 
 	void AddSphere(Sphere h);
@@ -29,13 +31,12 @@ protected:
 	std::vector<Sphere> spheres;
 	std::vector<Light> lights;
 	Renderer* renderer;
+	double et;
 };
 
 class TestScene : public Scene {
 public:
 	TestScene(Renderer& r);
-	void Draw(void);
 	void Update(double dt);
-private:
-	double et;
+	void Draw(void);
 };

@@ -10,11 +10,11 @@ all: spn
 spn: $(OBJECTS)
 	$(CC) -o spn $(OBJECTS) $(LDFLAGS)
 
-%.o: %.cpp include/%.hpp
+src/%.o: src/%.cpp include/%.hpp
 	$(CC) $(CXXFLAGS) -o $@ -c $<
 
 run: spn
-	SDL_VIDEODRIVER=wayland ./spn
+	SDL_VIDEODRIVER=wayland ./spn test.scn
 
 clean:
 	$(info Cleaning)
