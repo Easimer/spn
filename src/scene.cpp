@@ -121,25 +121,27 @@ void Scene::Draw(void)
 				Vector3 lc(r / n, g / n, b / n);
 
 				// calculate texture color
-				double radius = res.result->GetRadius() * 2;
+				double radius = res.result->GetRadius();
 				int ux = (int)(radius * u);
 				int vy = (int)(radius * v);
 				if(
-					(((ux & 1) == 0) && ((vy & 1) == 0)) ||
-					(((ux & 1) == 1) && ((vy & 1) == 1))
+					(ux & 1) == (vy & 1)
 				)
 				{
 					renderer->SetColor(((s + lc[0]) / 2) * 255, lc[1] * 255, lc[2] * 255);
 				}
 				else
 				{
-					Vector3 white(1 * s, 1 * s, 1 * s);
 					Vector3 rgb((s + lc[0]) / 2, (s + lc[1]) / 2, (s + lc[2]) / 2);
 					renderer->SetColor(rgb[0] * 255, rgb[1] * 255, rgb[2] * 255);
 				}
 				// TEMP
-				renderer->PlotPixel(x, y);
 			}
+			else
+			{
+				renderer->SetColor(0, 0, 0);
+			}
+			renderer->PlotPixel(x, y);
 		}
 	}
 }
@@ -150,9 +152,11 @@ TestScene::TestScene(Renderer& r)
 	width = r.GetWidth(); height = r.GetHeight();
 	camera = Point3(0, 0, 0);
 	camera_dist = (width / 2) * tan(45 * (M_PI / 180));
-	spheres.push_back(Sphere(Vector3(-30, 0, 150), 30));
-	spheres.push_back(Sphere(Vector3(-16, 0, 100), 15));
-	lights.push_back(Light(Point3(0, 0, 0), Vector3(0.0, 0.0, 1.0), 75));
+	spheres.push_back(Sphere(Vector3(0, 0, 150), 30));
+	//lights.push_back(Light(Point3(0, 0, 150), Vector3(0.0, 0.0, 1.0), 75));
+	lights.push_back(Light(Point3(50, 0, 100), Vector3(1.0, 0.0, 0.0), 25));
+	lights.push_back(Light(Point3(0, 50, 100), Vector3(1.0, 1.0, 1.0), 25));
+	et = 0.0;
 }
 
 void TestScene::Draw()
@@ -162,5 +166,14 @@ void TestScene::Draw()
 
 void TestScene::Update(double dt)
 {
-	
+	et += dt;
+	if(lights.size() == 0)
+		return;
+	/*Sphere s = spheres.front();
+	Point3 sp = s.GetPosition();
+	double z = 150 + 5 * sin(et);
+	double x = 5 * cos(et);
+	sp.SetZ(z);
+	sp.SetX(x);
+	std::cout << "Z: " << z << " X: " << x << std::endl;*/
 }

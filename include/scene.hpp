@@ -36,4 +36,6 @@ public:
 	TestScene(Renderer& r);
 	void Draw(void);
 	void Update(double dt);
+private:
+	double et;
 };
