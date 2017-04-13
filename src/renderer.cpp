@@ -1,6 +1,6 @@
+#include "renderer.hpp"
 #include <iostream>
 #include <SDL2/SDL.h>
-#include "renderer.hpp"
 
 SDL2Renderer::SDL2Renderer() : SDL2Renderer(1280, 720) {}
 

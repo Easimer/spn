@@ -1,8 +1,8 @@
 #include "scene.hpp"
-#include "geo.hpp"
-#include "vec.hpp"
 #include <limits>
 #include <cmath>
+#include "geo.hpp"
+#include "vec.hpp"
 
 void Scene::AddSphere(Sphere s)
 {

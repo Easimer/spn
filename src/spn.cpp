@@ -1,7 +1,7 @@
+#include "spn.h"
 #include <iostream>
-
-#include "renderer.hpp"
 #include "scene.hpp"
+#include "renderer.hpp"
 
 int main(int argc, char** argv)
 {

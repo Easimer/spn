@@ -2,7 +2,6 @@
 
 #include <vector>
 #include <iterator>
-#include <memory>
 #include "geo.hpp"
 #include "light.hpp"
 #include "renderer.hpp"

@@ -1,5 +1,5 @@
-#include <cmath>
 #include "vec.hpp"
+#include <cmath>
 
 Vector3::Vector3() : Vector3(0, 0, 0) {}
 Vector3::Vector3(double x) : Vector3(x, 0, 0) {}
