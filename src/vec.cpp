@@ -81,6 +81,12 @@ std::ostream& operator<<(std::ostream& os, Vector3 v)
 	return os;
 }
 
+std::ostream& operator<<(std::ostream& os, const Vector3& v)
+{
+	os << "(" << v.x << ", " << v.y << ", " << v.z << ")";
+	return os;
+}
+
 double Vector3::Dot(Vector3 a, Vector3 b)
 {
 	return a[0] * b[0] + a[1] * b[1] + a[2] * b[2];

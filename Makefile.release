@@ -16,6 +16,9 @@ src/%.o: src/%.cpp include/%.hpp
 run: spn
 	SDL_VIDEODRIVER=wayland ./spn test.scn
 
+runx: spn
+	./spn test.scn
+
 clean:
 	$(info Cleaning)
 	rm -rf $(OBJECTS) spn

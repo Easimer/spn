@@ -48,8 +48,12 @@ void SDL2Renderer::Present()
 
 	auto now = std::chrono::high_resolution_clock::now();
 	delta_time = std::chrono::duration_cast<std::chrono::milliseconds>(now - last_frame).count();
-	std::cout << "Render time: " << delta_time << " milliseconds" << std::endl;
+	//std::cout << "Render time: " << delta_time << " milliseconds" << std::endl;
 	last_frame = now;
+	if(delta_time < 17)
+	{
+		SDL_Delay((int)(16.66666666666 - delta_time));
+	}
 }
 
 void SDL2Renderer::SetColor(Vector3& color)

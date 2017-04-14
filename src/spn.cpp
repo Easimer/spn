@@ -1,6 +1,6 @@
 #include "spn.hpp"
 #include <iostream>
-#include "scene.hpp"
+#include "fscene.hpp"
 #include "renderer.hpp"
 
 int main(int argc, char** argv)

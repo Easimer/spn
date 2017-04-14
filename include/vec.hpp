@@ -21,6 +21,7 @@ public:
 	void SetY(double y);
 	void SetZ(double z);
 	Vector3 Normalize(void);
+	friend std::ostream& operator<<(std::ostream& os, const Vector3& v);
 private:
 	double x, y, z;
 };
@@ -33,5 +34,5 @@ Vector3 operator*(Vector3 a, Vector3 b);
 bool operator==(Vector3 a, Vector3 b);
 Vector3 operator*(Vector3 a, double b);
 Vector3 operator/(Vector3 a, double b);
-std::ostream& operator<<(std::ostream& os, Vector3& v);
-std::ostream& operator<<(std::ostream& os, Vector3 v);
+//std::ostream& operator<<(std::ostream& os, Vector3& v);
+//std::ostream& operator<<(std::ostream& os, Vector3 v);
