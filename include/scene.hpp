@@ -37,6 +37,8 @@ public:
 	void AddLight(Light l);
 	void AddTriangle(Triangle t);
 	void AddWall(Wall w);
+	Light* GetLight(unsigned i);
+	Sphere* GetSphere(unsigned i);
 
 	Point3 WorldToScreen(const Point3& w);
 	Point3 ScreenToWorld(const Point3& s);

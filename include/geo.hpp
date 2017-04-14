@@ -13,7 +13,9 @@ public:
 	Sphere(double x, double y, double z);
 	Sphere(double x, double y, double z, double radius);
 	Point3 GetPosition(void);
+	Point3* GetPositionUnsafe(void);
 	double GetRadius(void);
+	void SetRadius(double r);
 private:
 	Point3 position;
 	double radius;

@@ -297,6 +297,20 @@ Scene::Scene(Renderer& r)
 	std::cout << "Scene(" << width << ',' << height << ')' << std::endl;
 }
 
+Light* Scene::GetLight(unsigned index)
+{
+	if(index >= lights.size())
+		return NULL;
+	return &lights.at(index);
+}
+
+Sphere* Scene::GetSphere(unsigned index)
+{
+	if(index >= spheres.size())
+		return NULL;
+	return &spheres.at(index);
+}
+
 Point3 Scene::WorldToScreen(const Point3& w)
 {
 	return Point3(w[0] - camera[0] + width / 2, w[1], w[2] - camera[2] + height / 2);

@@ -39,6 +39,8 @@ public:
 
 	unsigned GetDelta(void);
 
+	bool SaveFrame(std::string filepath);
+
 	bool IsQuit() { return quit; };
 private:
 	SDL_Event event;
@@ -48,5 +50,6 @@ private:
 	bool quit = false;
 	std::chrono::time_point<std::chrono::high_resolution_clock> last_frame;
 	unsigned delta_time;
+	unsigned frame_counter = 0;
 };
 

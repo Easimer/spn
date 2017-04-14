@@ -15,9 +15,19 @@ Point3 Sphere::GetPosition(void)
 	return Point3(this->position);
 }
 
+Point3* Sphere::GetPositionUnsafe(void)
+{
+	return &position;
+}
+
 double Sphere::GetRadius(void)
 {
 	return this->radius;
+}
+
+void Sphere::SetRadius(double r)
+{
+	radius = r;
 }
 
 Triangle::Triangle() : Triangle(ORIGIN, ORIGIN, ORIGIN) {}

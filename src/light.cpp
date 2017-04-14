@@ -24,3 +24,18 @@ Vector3 Light::GetPosition(void)
 {
 	return Vector3(position);
 }
+
+Vector3* Light::GetPositionUnsafe(void)
+{
+	return &position;
+}
+
+Vector3* Light::GetColorUnsafe(void)
+{
+	return &color;
+}
+
+void Light::SetBrightness(double b)
+{
+	brightness = b;
+}

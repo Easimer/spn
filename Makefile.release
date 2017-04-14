@@ -1,6 +1,6 @@
 CC=g++
 CXXFLAGS=-Ofast -march=native -mtune=native -fomit-frame-pointer -I include/
-LDFLAGS=-lm -lSDL2
+LDFLAGS=-lm -lSDL2 -llua
 
 SOURCES=$(wildcard src/*.cpp)
 OBJECTS=$(SOURCES:.cpp=.o)
