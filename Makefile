@@ -8,7 +8,7 @@ OBJECTS=$(SOURCES:.cpp=.o)
 all: spn
 
 spn: $(OBJECTS)
-	LIBRARY_PATH=../lua-prefix/lib/ $(CC) -v -o spn $(OBJECTS) $(LDFLAGS)
+	LIBRARY_PATH=../lua-prefix/lib/ $(CC) -o spn $(OBJECTS) $(LDFLAGS)
 
 src/%.o: src/%.cpp include/%.hpp
 	$(CC) $(CXXFLAGS) -o $@ -c $<
