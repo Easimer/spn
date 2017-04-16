@@ -72,9 +72,29 @@ RaycastHit Scene::Raycast(Point3& src, Vector3& dir)
 	RaycastHit res;
 
 	res.object = NULL;
+	res.type = RC_NONE;
 	auto min_dist = std::numeric_limits<double>::infinity();
 	Point3 hit;
 	Vector3 normal;
+
+	// check collision with ground
+	Vector3 down(0, -1, 0);
+	double a = Vector3::Dot(down, dir);
+	if(a > 0)
+	{
+		double dx = sqrt(1 - a*a) / a;
+		double t = sqrt(dx * dx + src[1] * src[1]);
+		if(t < min_dist)
+		{
+			min_dist = t;
+			res.hit = src + t * dir;
+			res.normal = Vector3(0, 1, 0);
+			res.type = RC_GROUND;
+			res.object = NULL;
+		}
+	}
+
+	// check collision with spheres
 	for(auto& sphere : spheres)
 	{
 		Vector3 gp = sphere.GetPosition();
@@ -106,7 +126,7 @@ RaycastHit Scene::Raycast(Point3& src, Vector3& dir)
 			res.normal = i / gr;
 		}
 	}
-	for(auto& wall : walls)
+	/*for(auto& wall : walls)
 	{
 		Vector3 dir2(dir[0], 0, dir[2]);
 
@@ -146,33 +166,40 @@ RaycastHit Scene::Raycast(Point3& src, Vector3& dir)
     			res.normal = wall.GetNormal();
     		}
     	}
-	}
+	}*/
 	return res;
 }
 
+
 void Scene::Draw(void)
 {
+	double inf = std::numeric_limits<double>::infinity();
+	double depth_buffer[width * height] = {inf};
+	std::vector<cbuf> color_buffer(width * height, {0, 0, 0});
 	std::cout << "Scene::Draw" << std::endl;
 	Point3 screen_topleft(camera[0] - width / 2, camera[1] - height / 2, camera[2] - camera_dist);
 	Point3 px(screen_topleft);
 	for(unsigned x = 0; x < width; x++)
 	{
 		px.SetX(screen_topleft[0] + x);
-
+		//std::cout << x << std::endl;
 		for(unsigned y = 0; y < height; y++)
 		{
 			px.SetY(screen_topleft[1] + y);
 			Vector3 cpx = (camera - px).Normalize();
 			RaycastHit res = Raycast(camera, cpx);
-			if(!res.object)
+			if(!res.object && (res.type != RC_GROUND || res.type == RC_NONE))
 			{
+				depth_buffer[y * width + x] = inf;
 				continue;
 			}
+
+			Vector3 ch = cpx - res.hit;
+			depth_buffer[y * width + x] = ch.GetLength();
 
 			if(res.type == RC_TRIANGLE)
 			{
 				Triangle* t = (Triangle*)res.object;
-				std::cout << res.hit << std::endl;
 
 				double r = 0, g = 0, b = 0;
 				int n = 1;
@@ -197,13 +224,177 @@ void Scene::Draw(void)
 					n++;
 				}
 
-				renderer->SetColor(r/n, g/n, b/n);
-				renderer->PlotPixel(x, y);
+				//renderer->SetColor(r/n, g/n, b/n);
+				//renderer->PlotPixel(x, y);
+				color_buffer[y * width + x].r = (unsigned)(r / n * 255);
+				color_buffer[y * width + x].g = (unsigned)(g / n * 255);
+				color_buffer[y * width + x].b = (unsigned)(b / n * 255);
 			}
 			else if(res.type == RC_SPHERE)
 			{
-				renderer->SetColor(0, 0, 0);
-				renderer->PlotPixel(x, y);
+				double r = 0, g = 0, b = 0;
+				int n = 0;
+				double s = 0;
+
+				// calculate self light
+				for(auto& light : lights)
+				{
+					Point3 lp = light.GetPosition();
+					Vector3 lc = light.GetColor();
+					double ll = light.GetBrightness();
+
+					Vector3 pl = lp - res.hit;
+					double d = pl.GetLength();
+					double a = Vector3::Dot(res.normal, pl) / (res.normal.GetLength() * d);
+					if(a <= 0)
+						continue;
+					a = ((a * ll) / (d * d * 4 * M_PI));
+					if(a > 1.0)
+						a = 1.0;
+					r += a * (lc[0]);
+					g += a * (lc[1]);
+					b += a * (lc[2]);
+					s += a;
+					n++;
+				}
+
+				if(n == 0)
+					continue;
+
+				if(s / n > 0.01) {
+					// Reflection
+					res.normal.Normalize();
+
+					Point3 h(res.hit + 0.001 * res.normal);
+					RaycastHit resl2 = Raycast(h, res.normal);
+					if(res.type != RC_NONE)
+					{
+						// calculate light at that coordinate
+						for(auto& light : lights)
+						{
+							Point3 lp = light.GetPosition();
+							Vector3 lc = light.GetColor();
+							double ll = light.GetBrightness();
+
+							Vector3 pl = lp - resl2.hit;
+							double d = pl.GetLength();
+							double denom = resl2.normal.GetLength() * d;
+							if(denom == 0)
+							{
+								n++;
+								continue;
+							}
+							double a = Vector3::Dot(resl2.normal, pl) / (denom);
+							if(a <= 0)
+							{
+								r += lc[0] * 0.25;
+								g += lc[1] * 0.25;
+								b += lc[2] * 0.25;
+								n++;
+								continue;
+							}
+							a = ((a * ll) / (d * d * 4 * M_PI));
+							if(a > 1.0)
+								a = 1.0;
+							r += a / 2 * (lc[0]);
+							g += a / 2 * (lc[1]);
+							b += a / 2 * (lc[2]);
+							n++;
+						}
+					}
+					else
+					{
+						n++;
+					}
+				}
+
+				//renderer->SetColor(r / n * 255, g / n * 255, b / n * 255);
+				//renderer->PlotPixel(x, y);
+				color_buffer[y * width + x].r = (unsigned)(r / n * 255);
+				color_buffer[y * width + x].g = (unsigned)(g / n * 255);
+				color_buffer[y * width + x].b = (unsigned)(b / n * 255);
+
+			}
+			else if(res.type == RC_GROUND)
+			{
+				double r = 0, g = 255, b = 255;
+				int n = 1;
+				double s = 0;
+
+				// calculate self light
+				for(auto& light : lights)
+				{
+					Point3 lp = light.GetPosition();
+					Vector3 lc = light.GetColor();
+					double ll = light.GetBrightness();
+
+					Vector3 pl = lp - res.hit;
+					double d = pl.GetLength();
+					double a = Vector3::Dot(res.normal, pl) / (res.normal.GetLength() * d);
+					if(a <= 0)
+						continue;
+					a = ((a * ll) / (d * d * 4 * M_PI));
+					if(a > 1.0)
+						a = 1.0;
+					r += a * (lc[0]);
+					g += a * (lc[1]);
+					b += a * (lc[2]);
+					s += a;
+					n++;
+				}
+
+				if(true)
+				{
+					Point3 h(res.hit + 0.001 * Vector3(0, 1, 0));
+					RaycastHit resl2 = Raycast(h, res.normal);
+
+					if(res.type != RC_NONE)
+					{
+						for(auto& light : lights)
+						{
+							Point3 lp = light.GetPosition();
+							Vector3 lc = light.GetColor();
+							double ll = light.GetBrightness();
+
+							Vector3 pl = lp - resl2.hit;
+							double d = pl.GetLength();
+							double denom = resl2.normal.GetLength() * d;
+							if(denom == 0)
+							{
+								n++;
+								continue;
+							}
+							double a = Vector3::Dot(resl2.normal, pl) / (denom);
+							if(a <= 0)
+							{
+								r += lc[0] * 0.25;
+								g += lc[1] * 0.25;
+								b += lc[2] * 0.25;
+								n++;
+								continue;
+							}
+							a = ((a * ll) / (d * d * 4 * M_PI));
+							if(a > 1.0)
+								a = 1.0;
+							r += a / 2 * (lc[0]);
+							g += a / 2 * (lc[1]);
+							b += a / 2 * (lc[2]);
+							n++;
+						}
+					}
+					else
+					{
+						n++;
+					}
+				}
+
+				cbuf* c = &color_buffer[y * width + x];
+				c->r = r / n;
+				c->g = g / n;
+				c->b = b / n;
+			}
+			/*
+			{
 				double u, v;
 				Vector3 d = (res.hit - ((Sphere*)res.object)->GetPosition()).Normalize();
 				u = 0.5 + (atan2(d[2], d[0]) / (2 * M_PI));
@@ -265,10 +456,10 @@ void Scene::Draw(void)
 					renderer->SetColor(0, 0, 0);
 				}
 				renderer->PlotPixel(x, y);
-			}
+			}*/
 			else if(res.type == RC_WALL)
 			{
-				Vector3 v(res.hit[0], 0, res.hit[1]);
+				/*Vector3 v(res.hit[0], 0, res.hit[1]);
 				Vector3 d = res.hit - camera;
 
 				double max = 64 / d.GetLength();
@@ -276,8 +467,42 @@ void Scene::Draw(void)
 					continue;
 				
 				renderer->SetColor(255, 0, 0);
-				renderer->PlotPixel(x, y);
+				renderer->PlotPixel(x, y);*/
 			}
+		}
+	}
+
+	// DoF
+
+	for(int y = 0; y < height; y++)
+	{
+		for(int x = 0; x < width; x++)
+		{
+			double d = depth_buffer[y * width + x];
+			unsigned i = y * width + x;
+			if(d < 1000)
+			{
+				d /= 1000;
+				int a = d*200;
+				color_buffer[i].r = (a + color_buffer[i].r) / 2;
+				color_buffer[i].g = (a + color_buffer[i].g) / 2;
+				color_buffer[i].b = (a + color_buffer[i].b) / 2;
+			}
+			else
+			{
+				color_buffer[i].r = 200;
+				color_buffer[i].g = 200;
+				color_buffer[i].b = 200;
+			}
+		}
+	}
+
+	for(int y = 0; y < height; y++)
+	{
+		for(int x = 0; x < width; x++)
+		{
+			renderer->SetColor(color_buffer[y * width + x].r, color_buffer[y * width + x].g, color_buffer[y * width + x].b);
+			renderer->PlotPixel(x, y);
 		}
 	}
 }
@@ -295,6 +520,10 @@ Scene::Scene(Renderer& r)
 	camera_dist = (width / 2) * tan(45 * (M_PI / 180));
 	et = 0.0;
 	std::cout << "Scene(" << width << ',' << height << ')' << std::endl;
+}
+
+Scene::~Scene()
+{
 }
 
 Light* Scene::GetLight(unsigned index)
@@ -373,6 +602,11 @@ void Scene::DebugDot(const Point3& a)
 	Point3 w = WorldToScreen(a);
 	renderer->SetColor(255, 255, 0);
 	renderer->PlotPixel(w[0], w[2]);
+}
+
+const char* Scene::ScriptName(void)
+{
+	return scriptname.c_str();
 }
 
 // TestScene

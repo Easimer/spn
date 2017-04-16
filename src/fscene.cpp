@@ -26,6 +26,12 @@ void FileScene::ProcessFile(void)
 
 		if(line.size() == 0)
 			break;
+
+		if(scriptname.size() == 0)
+		{
+			scriptname = std::string(line);
+			continue;
+		}
 		
 		// entity type
 		i = line.find(" ");

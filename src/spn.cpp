@@ -13,7 +13,7 @@ int main(int argc, char** argv)
 	ScriptingContext sc(ts);
 	while(!r.IsQuit())
 	{
-		r.Clear();
+		//r.Clear();
 		r.Update();
 		double dt = (double)r.GetDelta() / 1000.0;
 		ts.Update(dt);

@@ -1,6 +1,6 @@
 CC=g++
 CXXFLAGS=-ggdb -std=c++1z -Wall -O0 -fsanitize=leak,address,undefined,float-divide-by-zero -fno-omit-frame-pointer -fPIC -I include/
-LDFLAGS=-lasan -lubsan -ldl -lm -lSDL2 -llua
+LDFLAGS=-lasan -lubsan -ldl -lm -lSDL2 -lSDL2_image -llua
 
 SOURCES=$(wildcard src/*.cpp)
 OBJECTS=$(SOURCES:.cpp=.o)

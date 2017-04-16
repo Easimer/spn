@@ -2,7 +2,18 @@
 
 #include <SDL2/SDL.h>
 #include <chrono>
+#include <vector>
 #include "vec.hpp"
+
+class Texture {
+public:
+	Texture(unsigned width, unsigned height, void* data);
+	~Texture();
+	Vector3 GetPixel(unsigned x, unsigned y);
+protected:
+	unsigned width, height;
+	void* data;
+};
 
 class Renderer {
 public:
@@ -18,6 +29,7 @@ public:
 
 protected:
 	bool quit = false;
+	std::vector<Texture> textures;
 };
 
 class SDL2Renderer : public Renderer {
@@ -50,6 +62,7 @@ private:
 	bool quit = false;
 	std::chrono::time_point<std::chrono::high_resolution_clock> last_frame;
 	unsigned delta_time;
+	unsigned elapsed = 0;
 	unsigned frame_counter = 0;
 };
 

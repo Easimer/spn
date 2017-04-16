@@ -1,6 +1,7 @@
 #include "renderer.hpp"
 #include <iostream>
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
 
 SDL2Renderer::SDL2Renderer() : SDL2Renderer(1280, 720) {}
 
@@ -10,7 +11,12 @@ SDL2Renderer::SDL2Renderer(unsigned int width, unsigned int height)
 	SDL_CreateWindowAndRenderer(width, height, 0, &(this->window), &(this->renderer));
 	SDL_RenderClear(renderer);
 	this->width = width; this->height = height;
-	//IMG_Init(IMG_INIT_PNG);
+
+	if(!(IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG))
+	{
+		std::cout << "SDL_Image init failed" << std::endl;
+	}
+
 	last_frame = std::chrono::high_resolution_clock::now();
 	delta_time = 0;
 }
@@ -29,13 +35,15 @@ SDL2Renderer::~SDL2Renderer()
 {
 	SDL_DestroyRenderer(renderer);
 	SDL_DestroyWindow(window);
+	IMG_Quit();
 	SDL_Quit();
 	std::cout << "SDL_Quit" << std::endl;
+	std::cout << "Average FPS: " << ((float)frame_counter / (float)elapsed) * 1000 << std::endl;
 }
 
 void SDL2Renderer::Clear()
 {
-	SDL_SetRenderDrawColor(renderer, 64, 64, 64, 255);
+	SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 	SDL_RenderClear(renderer);
 }
 
@@ -43,7 +51,7 @@ void SDL2Renderer::Present()
 {
 	SDL_RenderPresent(renderer);
 
-	SaveFrame(std::string("out/frame") + std::to_string(frame_counter++) + std::string(".bmp"));
+	//SaveFrame(std::string("out/frame") + std::to_string(frame_counter) + std::string(".bmp"));
 	/*auto now = std::chrono::high_resolution_clock::now();
 	std::cout << "Render time: " << std::chrono::duration_cast<std::chrono::milliseconds>(now - last_frame).count() << " milliseconds" << std::endl;
 	clock = std::chrono::high_resolution_clock::now();*/
@@ -56,6 +64,8 @@ void SDL2Renderer::Present()
 	{
 		SDL_Delay((int)(16.66666666666 - delta_time));
 	}
+	elapsed += delta_time;
+	frame_counter++;
 }
 
 void SDL2Renderer::SetColor(Vector3& color)
@@ -134,4 +144,24 @@ bool SDL2Renderer::SaveFrame(std::string filepath) {
 unsigned SDL2Renderer::GetDelta(void)
 {
 	return delta_time;
+}
+
+Texture::Texture(unsigned w, unsigned h, void* d)
+{
+	data = malloc(w * h * 3);
+	memcpy(data, d, w * h * 3);
+	width = w;
+	height = h;
+}
+
+Texture::~Texture()
+{
+	free(data);
+}
+
+Vector3 Texture::GetPixel(unsigned x, unsigned y)
+{
+	uint8_t* pix = (uint8_t*)data;
+	unsigned index = y * width + x;
+	return Vector3 (pix[index] / 255.0, pix[index+1] / 255.0, pix[index+2] / 255.0);
 }

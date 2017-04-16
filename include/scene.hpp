@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <iterator>
+#include <stdint.h>
 #include "geo.hpp"
 #include "light.hpp"
 #include "renderer.hpp"
@@ -14,9 +15,11 @@ public:
 };
 
 typedef enum {
+	RC_NONE,
 	RC_SPHERE,
 	RC_TRIANGLE,
-	RC_WALL
+	RC_WALL,
+	RC_GROUND
 } RaycastHitType;
 
 class RaycastHit {
@@ -30,6 +33,7 @@ public:
 class Scene {
 public:
 	Scene(Renderer& r);
+	~Scene();
 	void Update(double dt);
 	void Draw(void);
 
@@ -45,6 +49,10 @@ public:
 
 	void DebugLine(const Point3& a, const Point3& b);
 	void DebugDot(const Point3& a);
+
+	const char* ScriptName(void);
+
+	std::tuple<RaycastHit, Vector3, int> Reflect(const Point3& src, const Vector3& dir, int level);
 private:
 	FirstHitResult FirstHit(Vector3& src, Vector3& dir);
 	RaycastHit Raycast(Vector3& src, Vector3& dir);
@@ -59,6 +67,11 @@ protected:
 	std::vector<Wall> walls;
 	Renderer* renderer;
 	double et;
+	std::string scriptname;
+};
+
+struct cbuf {
+	uint8_t r, g, b;
 };
 
 class TestScene : public Scene {

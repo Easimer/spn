@@ -6,7 +6,6 @@ std::map<lua_State*, ScriptingContext*> lua2ctx;
 
 #define LUAAPI_GETCTX() \
 	ScriptingContext* ctx;			\
-	std::cout << L << std::endl;	\
 	try {							\
 		ctx = lua2ctx.at(L);		\
 	} catch(std::exception& e) {	\
@@ -29,7 +28,11 @@ ScriptingContext::ScriptingContext(const Scene& s)
 	}
 	luaL_openlibs(L);
 
-	int status = luaL_loadfile(L, "test.lua");
+	const char* scr = ((Scene*)this->s)->ScriptName();
+
+	std::cout << scr << std::endl;
+
+	int status = luaL_loadfile(L, scr);
 	if(status)
 	{
 		std::cout << "Couldn't load file " << lua_tostring(L, -1) << std::endl;
